@@ -1,0 +1,1037 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Boosted Builders | Matched Betting Calculator</title>
+  <meta name="description" content="A simple UK matched betting calculator for boosted odds, equivalent market lays, winnings boosts, free bets and refund-if-loses reload offers." />
+  <style>
+    :root {
+      --bg: #080b13;
+      --bg-soft: #101827;
+      --panel: rgba(255,255,255,0.08);
+      --panel-strong: rgba(255,255,255,0.13);
+      --stroke: rgba(255,255,255,0.18);
+      --text: #f7fbff;
+      --muted: #9aa9bd;
+      --muted-2: #c8d3e2;
+      --accent: #8b5cf6;
+      --accent-2: #22d3ee;
+      --accent-3: #a3e635;
+      --danger: #fb7185;
+      --warning: #fbbf24;
+      --good: #34d399;
+      --shadow: 0 26px 80px rgba(0,0,0,0.45);
+      --radius: 28px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 12% 8%, rgba(34, 211, 238, 0.26), transparent 28rem),
+        radial-gradient(circle at 84% 12%, rgba(139, 92, 246, 0.32), transparent 34rem),
+        radial-gradient(circle at 50% 95%, rgba(163, 230, 53, 0.12), transparent 28rem),
+        linear-gradient(180deg, #060914 0%, #0b1020 52%, #050712 100%);
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
+      background-size: 44px 44px;
+      mask-image: radial-gradient(circle at center, black, transparent 74%);
+    }
+
+    .page {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 28px 0 56px;
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 58px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      font-size: 1.05rem;
+    }
+
+    .logo {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      border-radius: 15px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      box-shadow: 0 12px 34px rgba(34,211,238,0.22);
+    }
+
+    .badge-row {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .pill {
+      border: 1px solid var(--stroke);
+      background: rgba(255,255,255,0.07);
+      color: var(--muted-2);
+      border-radius: 999px;
+      padding: 9px 13px;
+      font-size: 0.86rem;
+      backdrop-filter: blur(12px);
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.02fr) minmax(340px, 0.98fr);
+      gap: 28px;
+      align-items: center;
+      margin-bottom: 28px;
+    }
+
+    .hero-copy {
+      padding: 10px 0;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid rgba(34,211,238,0.28);
+      background: rgba(34,211,238,0.09);
+      color: #cffafe;
+      border-radius: 999px;
+      padding: 9px 13px;
+      font-weight: 800;
+      font-size: 0.84rem;
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2.7rem, 7vw, 6.4rem);
+      line-height: 0.88;
+      letter-spacing: -0.08em;
+      max-width: 900px;
+    }
+
+    .gradient-text {
+      background: linear-gradient(135deg, #fff, #d9f99d 25%, #67e8f9 60%, #c4b5fd 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .subhead {
+      max-width: 650px;
+      margin: 22px 0 0;
+      color: var(--muted-2);
+      font-size: clamp(1rem, 1.7vw, 1.2rem);
+      line-height: 1.7;
+    }
+
+    .hero-card {
+      position: relative;
+      padding: 24px;
+      border-radius: var(--radius);
+      border: 1px solid var(--stroke);
+      background: linear-gradient(180deg, rgba(255,255,255,0.14), rgba(255,255,255,0.06));
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      backdrop-filter: blur(22px);
+    }
+
+    .hero-card::before {
+      content: "";
+      position: absolute;
+      inset: -40% -25% auto auto;
+      width: 260px;
+      height: 260px;
+      border-radius: 999px;
+      background: rgba(34,211,238,0.16);
+      filter: blur(10px);
+    }
+
+    .mini-ticket {
+      position: relative;
+      padding: 18px;
+      border: 1px solid rgba(255,255,255,0.16);
+      border-radius: 22px;
+      background: rgba(5,7,18,0.58);
+    }
+
+    .ticket-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 16px;
+      color: var(--muted);
+      font-weight: 700;
+      font-size: 0.83rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .ticket-market {
+      display: grid;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    .market-line {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 12px 14px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.08);
+      color: var(--muted-2);
+    }
+
+    .market-line strong {
+      color: var(--text);
+    }
+
+    .locked {
+      padding: 18px;
+      border-radius: 20px;
+      background: linear-gradient(135deg, rgba(163,230,53,0.18), rgba(34,211,238,0.12));
+      border: 1px solid rgba(163,230,53,0.26);
+    }
+
+    .locked span {
+      color: var(--muted-2);
+      font-size: 0.9rem;
+    }
+
+    .locked strong {
+      display: block;
+      font-size: 2.2rem;
+      margin-top: 4px;
+      letter-spacing: -0.05em;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 370px;
+      gap: 24px;
+      align-items: start;
+      margin-top: 32px;
+    }
+
+    .calculator,
+    .side-card,
+    .formula-card {
+      border: 1px solid var(--stroke);
+      background: linear-gradient(180deg, rgba(255,255,255,0.12), rgba(255,255,255,0.055));
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(22px);
+    }
+
+    .calculator {
+      padding: 24px;
+    }
+
+    .calc-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: flex-start;
+      margin-bottom: 20px;
+    }
+
+    h2, h3 {
+      margin: 0;
+      letter-spacing: -0.045em;
+    }
+
+    h2 {
+      font-size: clamp(1.7rem, 3vw, 2.4rem);
+    }
+
+    h3 {
+      font-size: 1.12rem;
+    }
+
+    .hint {
+      margin: 7px 0 0;
+      color: var(--muted);
+      line-height: 1.55;
+      font-size: 0.95rem;
+    }
+
+    .tabs {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+      margin-bottom: 22px;
+    }
+
+    .tab {
+      border: 1px solid rgba(255,255,255,0.15);
+      background: rgba(255,255,255,0.06);
+      color: var(--muted-2);
+      border-radius: 17px;
+      padding: 12px 10px;
+      cursor: pointer;
+      font-weight: 850;
+      transition: transform 0.16s ease, border 0.16s ease, background 0.16s ease;
+    }
+
+    .tab:hover {
+      transform: translateY(-1px);
+      border-color: rgba(34,211,238,0.38);
+    }
+
+    .tab.active {
+      color: var(--text);
+      border-color: rgba(34,211,238,0.58);
+      background: linear-gradient(135deg, rgba(139,92,246,0.30), rgba(34,211,238,0.18));
+      box-shadow: 0 10px 26px rgba(34,211,238,0.10);
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .field {
+      display: grid;
+      gap: 8px;
+    }
+
+    .field.full {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      color: var(--muted-2);
+      font-weight: 800;
+      font-size: 0.92rem;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      color: var(--text);
+      border: 1px solid rgba(255,255,255,0.16);
+      background: rgba(4,7,16,0.62);
+      border-radius: 16px;
+      padding: 14px 14px;
+      font: inherit;
+      outline: none;
+      transition: border 0.16s ease, box-shadow 0.16s ease, background 0.16s ease;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: rgba(34,211,238,0.66);
+      box-shadow: 0 0 0 4px rgba(34,211,238,0.12);
+      background: rgba(4,7,16,0.78);
+    }
+
+    textarea {
+      min-height: 82px;
+      resize: vertical;
+    }
+
+    .helper {
+      color: var(--muted);
+      font-size: 0.8rem;
+      line-height: 1.45;
+    }
+
+    .actions {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    button.primary,
+    button.secondary {
+      border: 0;
+      border-radius: 17px;
+      padding: 14px 18px;
+      font: inherit;
+      font-weight: 950;
+      cursor: pointer;
+      transition: transform 0.16s ease, opacity 0.16s ease;
+    }
+
+    button.primary {
+      color: #051018;
+      background: linear-gradient(135deg, var(--accent-3), var(--accent-2));
+      box-shadow: 0 12px 34px rgba(34,211,238,0.18);
+    }
+
+    button.secondary {
+      color: var(--text);
+      border: 1px solid rgba(255,255,255,0.16);
+      background: rgba(255,255,255,0.08);
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+    }
+
+    .results {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-top: 22px;
+    }
+
+    .metric {
+      border: 1px solid rgba(255,255,255,0.14);
+      background: rgba(255,255,255,0.07);
+      border-radius: 20px;
+      padding: 16px;
+      min-height: 112px;
+    }
+
+    .metric span {
+      display: block;
+      color: var(--muted);
+      font-size: 0.78rem;
+      font-weight: 850;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 8px;
+    }
+
+    .metric strong {
+      display: block;
+      font-size: 1.55rem;
+      letter-spacing: -0.05em;
+    }
+
+    .metric small {
+      display: block;
+      color: var(--muted);
+      margin-top: 6px;
+      line-height: 1.35;
+    }
+
+    .positive strong { color: var(--good); }
+    .negative strong { color: var(--danger); }
+    .warning strong { color: var(--warning); }
+
+    .analysis-box {
+      margin-top: 14px;
+      border: 1px solid rgba(255,255,255,0.14);
+      background: rgba(5,7,18,0.44);
+      border-radius: 20px;
+      padding: 16px;
+      color: var(--muted-2);
+      line-height: 1.62;
+    }
+
+    .analysis-box strong {
+      color: var(--text);
+    }
+
+    .side {
+      display: grid;
+      gap: 18px;
+    }
+
+    .side-card,
+    .formula-card {
+      padding: 20px;
+    }
+
+    .equiv {
+      display: grid;
+      gap: 12px;
+      margin-top: 15px;
+    }
+
+    .equiv-card {
+      border: 1px solid rgba(255,255,255,0.14);
+      background: rgba(255,255,255,0.06);
+      border-radius: 18px;
+      padding: 14px;
+    }
+
+    .equiv-card .arrow {
+      color: var(--accent-2);
+      font-weight: 1000;
+      margin: 8px 0;
+    }
+
+    .codeish {
+      display: inline-block;
+      border: 1px solid rgba(255,255,255,0.14);
+      background: rgba(0,0,0,0.25);
+      padding: 3px 8px;
+      border-radius: 999px;
+      color: #d9f99d;
+      font-weight: 800;
+      font-size: 0.83rem;
+    }
+
+    .formula {
+      display: grid;
+      gap: 12px;
+      margin-top: 14px;
+      color: var(--muted-2);
+      line-height: 1.55;
+    }
+
+    .formula div {
+      padding: 13px;
+      border-radius: 16px;
+      background: rgba(0,0,0,0.22);
+      border: 1px solid rgba(255,255,255,0.10);
+    }
+
+    .footer-note {
+      margin-top: 24px;
+      color: var(--muted);
+      line-height: 1.65;
+      font-size: 0.9rem;
+    }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 22px;
+      transform: translateX(-50%) translateY(120px);
+      opacity: 0;
+      transition: 0.2s ease;
+      background: rgba(5,7,18,0.92);
+      color: var(--text);
+      border: 1px solid var(--stroke);
+      border-radius: 999px;
+      padding: 12px 16px;
+      box-shadow: var(--shadow);
+      z-index: 10;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    @media (max-width: 960px) {
+      .hero,
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .tabs {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .results {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 620px) {
+      .page {
+        width: min(100% - 22px, 1180px);
+        padding-top: 18px;
+      }
+
+      .nav {
+        align-items: flex-start;
+        flex-direction: column;
+        margin-bottom: 34px;
+      }
+
+      .hero-card,
+      .calculator,
+      .side-card,
+      .formula-card {
+        border-radius: 22px;
+      }
+
+      .tabs,
+      .form-grid,
+      .results {
+        grid-template-columns: 1fr;
+      }
+
+      .calc-head {
+        flex-direction: column;
+      }
+
+      .actions button {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <nav class="nav" aria-label="Page navigation">
+      <div class="brand">
+        <div class="logo" aria-hidden="true">⚡</div>
+        <span>Boosted Builders</span>
+      </div>
+      <div class="badge-row">
+        <span class="pill">UK reload helper</span>
+        <span class="pill">No sign-up fluff</span>
+        <span class="pill">18+ only</span>
+      </div>
+    </nav>
+
+    <section class="hero">
+      <div class="hero-copy">
+        <div class="eyebrow">Built for boosted offers, weird lays and Discord screenshots</div>
+        <h1><span class="gradient-text">Lay it clean.</span><br />Lock it fast.</h1>
+        <p class="subhead">
+          A simple matched betting calculator for boosted odds, Bet Builder equivalence lays, winnings boosts,
+          free bets and refund-if-loses reloads. Enter the bookie side, enter the exchange side, then check the liability before you place anything.
+        </p>
+      </div>
+
+      <aside class="hero-card" aria-label="Example matched betting ticket">
+        <div class="mini-ticket">
+          <div class="ticket-top">
+            <span>Example equivalence</span>
+            <span>90 mins</span>
+          </div>
+          <div class="ticket-market">
+            <div class="market-line"><span>Bookie back</span><strong>Draw + BTTS + U3.5</strong></div>
+            <div class="market-line"><span>Exchange lay</span><strong>Correct Score 1-1</strong></div>
+            <div class="market-line"><span>Logic</span><strong>same outcome</strong></div>
+          </div>
+          <div class="locked">
+            <span>Discord-style goal</span>
+            <strong>£2.56 locked 🔒</strong>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="grid">
+      <section class="calculator" aria-labelledby="calculator-title">
+        <div class="calc-head">
+          <div>
+            <h2 id="calculator-title">Calculator</h2>
+            <p class="hint" id="modeHint">Equivalent market lay: use when the bookie Bet Builder and exchange lay market settle on the same exact outcome.</p>
+          </div>
+          <span class="pill" id="modePill">Equivalent Market</span>
+        </div>
+
+        <div class="tabs" role="tablist" aria-label="Calculator type">
+          <button class="tab active" data-mode="equivalent" type="button">Equivalent lay</button>
+          <button class="tab" data-mode="boosted" type="button">Boosted odds</button>
+          <button class="tab" data-mode="winnings" type="button">Winnings boost</button>
+          <button class="tab" data-mode="freebet" type="button">Free bet SNR</button>
+          <button class="tab" data-mode="refund" type="button">Refund if loses</button>
+        </div>
+
+        <form id="calcForm" class="form-grid">
+          <div class="field full mode-only equivalent">
+            <label for="backDescription">Bookie back description</label>
+            <textarea id="backDescription" placeholder="Example: Draw, BTTS & Under 3.5 Goals">Draw, BTTS & Under 3.5 Goals</textarea>
+            <div class="helper">This is for your notes/copy output only. The maths uses the stake and odds below.</div>
+          </div>
+
+          <div class="field full mode-only equivalent">
+            <label for="layDescription">Exchange lay market</label>
+            <textarea id="layDescription" placeholder="Example: Lay Correct Score 1-1">Lay Correct Score 1-1</textarea>
+            <div class="helper">Only use this if both bets settle on exactly the same football outcome and match period.</div>
+          </div>
+
+          <div class="field">
+            <label for="backStake">Back stake (£)</label>
+            <input id="backStake" inputmode="decimal" value="10" />
+          </div>
+
+          <div class="field">
+            <label for="backOdds" id="backOddsLabel">Back odds</label>
+            <input id="backOdds" inputmode="decimal" value="4.5" />
+            <div class="helper" id="backOddsHelp">Use the bookie odds for the boosted/equivalent back bet.</div>
+          </div>
+
+          <div class="field">
+            <label for="layOdds">Exchange lay odds</label>
+            <input id="layOdds" inputmode="decimal" value="4.4" />
+          </div>
+
+          <div class="field">
+            <label for="commission">Exchange commission (%)</label>
+            <input id="commission" inputmode="decimal" value="2" />
+            <div class="helper">Use 2 for 2%. Smarkets is often 2%, Betfair varies.</div>
+          </div>
+
+          <div class="field mode-only winnings hidden">
+            <label for="boostPercent">Winnings boost (%)</label>
+            <input id="boostPercent" inputmode="decimal" value="50" />
+            <div class="helper">For “50% bonus on winnings”, enter 50.</div>
+          </div>
+
+          <div class="field mode-only winnings hidden">
+            <label for="boostCap">Max bonus cap (£)</label>
+            <input id="boostCap" inputmode="decimal" value="0" />
+            <div class="helper">Enter 0 if there is no cap or you do not know it.</div>
+          </div>
+
+          <div class="field mode-only refund hidden">
+            <label for="refundValue">Refund value (£)</label>
+            <input id="refundValue" inputmode="decimal" value="10" />
+          </div>
+
+          <div class="field mode-only refund hidden">
+            <label for="retention">Refund retention (%)</label>
+            <input id="retention" inputmode="decimal" value="75" />
+            <div class="helper">Use 75 for a free bet refund estimate, 100 for a cash/stake refund.</div>
+          </div>
+        </form>
+
+        <div class="actions">
+          <button class="primary" type="button" id="calculateBtn">Calculate lay</button>
+          <button class="secondary" type="button" id="copyBtn">Copy result</button>
+          <button class="secondary" type="button" id="resetBtn">Reset example</button>
+        </div>
+
+        <section class="results" aria-live="polite">
+          <div class="metric" id="layStakeCard">
+            <span>Lay stake</span>
+            <strong id="layStakeOut">£0.00</strong>
+            <small>Stake to place on the exchange lay.</small>
+          </div>
+          <div class="metric" id="liabilityCard">
+            <span>Liability</span>
+            <strong id="liabilityOut">£0.00</strong>
+            <small>Cash needed in the exchange.</small>
+          </div>
+          <div class="metric" id="backWinCard">
+            <span>If back wins</span>
+            <strong id="backWinOut">£0.00</strong>
+            <small>Bookie wins, exchange lay loses.</small>
+          </div>
+          <div class="metric" id="layWinCard">
+            <span>If lay wins</span>
+            <strong id="layWinOut">£0.00</strong>
+            <small>Bookie loses, exchange lay wins.</small>
+          </div>
+        </section>
+
+        <div class="analysis-box" id="analysisBox">
+          Add your odds and press calculate. For equivalent market lays, the key question is not the formula — it is whether the two markets truly settle on the same outcome.
+        </div>
+
+        <p class="footer-note">
+          This tool is for calculation support only, not betting advice. Always check the bookmaker promotion terms, settlement period, void rules, max bonus, exchange liquidity and commission before placing a bet. 18+ only.
+        </p>
+      </section>
+
+      <aside class="side">
+        <section class="side-card">
+          <h3>Equivalent lays to understand</h3>
+          <p class="hint">These are the clever ones: the bookie market name and exchange market name can differ, but the result must be identical.</p>
+          <div class="equiv">
+            <div class="equiv-card">
+              <span class="codeish">Bookie Bet Builder</span>
+              <p>Draw + Both Teams To Score + Under 3.5 Goals</p>
+              <div class="arrow">↓ equals</div>
+              <span class="codeish">Exchange</span>
+              <p>Lay Correct Score 1-1</p>
+            </div>
+            <div class="equiv-card">
+              <span class="codeish">Rule</span>
+              <p>If there is even one extra scoreline where the back bet wins but the lay does not lose, it is not a clean equivalent lay.</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="formula-card">
+          <h3>Formula notes</h3>
+          <div class="formula">
+            <div><strong>Normal/equivalent lay:</strong><br />lay = back stake × back odds ÷ (lay odds − commission)</div>
+            <div><strong>Free bet SNR:</strong><br />lay = free bet stake × (back odds − 1) ÷ (lay odds − commission)</div>
+            <div><strong>Refund if loses:</strong><br />lay is reduced by the cash-equivalent refund value.</div>
+          </div>
+        </section>
+      </aside>
+    </section>
+  </main>
+
+  <div class="toast" id="toast">Copied result</div>
+
+  <script>
+    const state = {
+      mode: 'equivalent'
+    };
+
+    const modeMeta = {
+      equivalent: {
+        label: 'Equivalent Market',
+        hint: 'Equivalent market lay: use when the bookie Bet Builder and exchange lay market settle on the same exact outcome.',
+        backOddsLabel: 'Back odds',
+        backOddsHelp: 'Use the bookie odds for the boosted/equivalent back bet.'
+      },
+      boosted: {
+        label: 'Boosted Odds',
+        hint: 'Boosted odds lay: use when the bookie gives you a direct boosted price and you lay the same/equivalent outcome.',
+        backOddsLabel: 'Boosted back odds',
+        backOddsHelp: 'Use the final boosted odds shown by the bookie.'
+      },
+      winnings: {
+        label: 'Winnings Boost',
+        hint: 'Winnings boost: use for offers like “50% extra winnings” or “profit boost on winnings”.',
+        backOddsLabel: 'Original back odds',
+        backOddsHelp: 'Use the normal bookie odds before the winnings boost is applied.'
+      },
+      freebet: {
+        label: 'Free Bet SNR',
+        hint: 'Free bet SNR: use when the free bet stake is not returned with winnings.',
+        backOddsLabel: 'Free bet back odds',
+        backOddsHelp: 'Use the odds where you place the free bet.'
+      },
+      refund: {
+        label: 'Refund If Loses',
+        hint: 'Refund if loses: use when a losing back bet returns a free bet, bonus or cash-equivalent refund.',
+        backOddsLabel: 'Back odds',
+        backOddsHelp: 'Use the original bookie odds for the qualifying bet.'
+      }
+    };
+
+    const examples = {
+      equivalent: { backStake: 10, backOdds: 4.5, layOdds: 4.4, commission: 2, backDescription: 'Draw, BTTS & Under 3.5 Goals', layDescription: 'Lay Correct Score 1-1' },
+      boosted: { backStake: 20, backOdds: 5.0, layOdds: 4.7, commission: 2 },
+      winnings: { backStake: 20, backOdds: 4.0, layOdds: 4.1, commission: 2, boostPercent: 50, boostCap: 0 },
+      freebet: { backStake: 10, backOdds: 5.0, layOdds: 5.2, commission: 2 },
+      refund: { backStake: 10, backOdds: 3.0, layOdds: 3.05, commission: 2, refundValue: 10, retention: 75 }
+    };
+
+    const $ = (id) => document.getElementById(id);
+
+    function toNumber(id) {
+      const raw = $(id).value.toString().replace(/[£,%\s]/g, '');
+      const n = Number(raw);
+      return Number.isFinite(n) ? n : NaN;
+    }
+
+    function money(value) {
+      if (!Number.isFinite(value)) return '—';
+      const sign = value < 0 ? '-' : '';
+      return `${sign}£${Math.abs(value).toFixed(2)}`;
+    }
+
+    function pct(value) {
+      if (!Number.isFinite(value)) return '—';
+      return `${value.toFixed(1)}%`;
+    }
+
+    function setMetricClass(cardId, value) {
+      const card = $(cardId);
+      card.classList.remove('positive', 'negative', 'warning');
+      if (!Number.isFinite(value)) return;
+      if (value > 0.009) card.classList.add('positive');
+      else if (value < -0.009) card.classList.add('negative');
+      else card.classList.add('warning');
+    }
+
+    function calculate() {
+      const backStake = toNumber('backStake');
+      const backOdds = toNumber('backOdds');
+      const layOdds = toNumber('layOdds');
+      const commissionPct = toNumber('commission');
+      const commission = commissionPct / 100;
+
+      const errors = [];
+      if (!(backStake > 0)) errors.push('Back stake must be above £0.');
+      if (!(backOdds > 1)) errors.push('Back odds must be above 1.00.');
+      if (!(layOdds > 1)) errors.push('Lay odds must be above 1.00.');
+      if (!(commission >= 0 && commission < 1)) errors.push('Commission must be between 0% and 99%.');
+      if (!(layOdds - commission > 0)) errors.push('Lay odds minus commission must be above zero.');
+
+      if (errors.length) {
+        renderEmpty(errors.join(' '));
+        return null;
+      }
+
+      let layStake = 0;
+      let liability = 0;
+      let backWinProfit = 0;
+      let layWinProfit = 0;
+      let extraLine = '';
+
+      if (state.mode === 'freebet') {
+        layStake = ((backOdds - 1) * backStake) / (layOdds - commission);
+        liability = (layOdds - 1) * layStake;
+        backWinProfit = ((backOdds - 1) * backStake) - liability;
+        layWinProfit = layStake * (1 - commission);
+        const retention = Math.min(backWinProfit, layWinProfit) / backStake * 100;
+        extraLine = `<strong>Free bet retention:</strong> about ${pct(retention)} of the free bet stake.`;
+      } else if (state.mode === 'winnings') {
+        const boostPercent = toNumber('boostPercent') / 100;
+        const cap = toNumber('boostCap');
+        if (!(boostPercent >= 0)) {
+          renderEmpty('Boost percentage must be zero or above.');
+          return null;
+        }
+        const baseWinnings = (backOdds - 1) * backStake;
+        const uncappedBonus = baseWinnings * boostPercent;
+        const bonus = cap > 0 ? Math.min(uncappedBonus, cap) : uncappedBonus;
+        const effectiveBookieReturn = backStake + baseWinnings + bonus;
+        layStake = effectiveBookieReturn / (layOdds - commission);
+        liability = (layOdds - 1) * layStake;
+        backWinProfit = baseWinnings + bonus - liability;
+        layWinProfit = layStake * (1 - commission) - backStake;
+        extraLine = `<strong>Boost value used:</strong> ${money(bonus)} bonus on top of ${money(baseWinnings)} base winnings.`;
+      } else if (state.mode === 'refund') {
+        const refundValue = toNumber('refundValue');
+        const retention = toNumber('retention') / 100;
+        if (!(refundValue >= 0)) {
+          renderEmpty('Refund value must be zero or above.');
+          return null;
+        }
+        if (!(retention >= 0 && retention <= 1)) {
+          renderEmpty('Refund retention must be between 0% and 100%.');
+          return null;
+        }
+        const refundCashEquivalent = refundValue * retention;
+        layStake = ((backOdds * backStake) - refundCashEquivalent) / (layOdds - commission);
+        if (layStake < 0) {
+          renderEmpty('Refund value is too large for these odds. Try a lower refund value or retention percentage.');
+          return null;
+        }
+        liability = (layOdds - 1) * layStake;
+        backWinProfit = ((backOdds - 1) * backStake) - liability;
+        layWinProfit = layStake * (1 - commission) - backStake + refundCashEquivalent;
+        extraLine = `<strong>Refund value used:</strong> ${money(refundCashEquivalent)} cash-equivalent value (${money(refundValue)} × ${pct(retention * 100)}).`;
+      } else {
+        layStake = (backOdds * backStake) / (layOdds - commission);
+        liability = (layOdds - 1) * layStake;
+        backWinProfit = ((backOdds - 1) * backStake) - liability;
+        layWinProfit = layStake * (1 - commission) - backStake;
+        extraLine = state.mode === 'equivalent'
+          ? '<strong>Equivalence check:</strong> confirm the bookie back and exchange lay settle on the same exact 90-minute outcome.'
+          : '<strong>Boosted odds check:</strong> confirm the boosted odds are the actual price used for the back bet.';
+      }
+
+      renderResults({ layStake, liability, backWinProfit, layWinProfit, extraLine });
+      return { layStake, liability, backWinProfit, layWinProfit, extraLine };
+    }
+
+    function renderEmpty(message) {
+      $('layStakeOut').textContent = '—';
+      $('liabilityOut').textContent = '—';
+      $('backWinOut').textContent = '—';
+      $('layWinOut').textContent = '—';
+      ['layStakeCard', 'liabilityCard', 'backWinCard', 'layWinCard'].forEach(id => $(id).classList.remove('positive', 'negative', 'warning'));
+      $('analysisBox').innerHTML = `<strong>Check input:</strong> ${message}`;
+    }
+
+    function renderResults(result) {
+      $('layStakeOut').textContent = money(result.layStake);
+      $('liabilityOut').textContent = money(result.liability);
+      $('backWinOut').textContent = money(result.backWinProfit);
+      $('layWinOut').textContent = money(result.layWinProfit);
+
+      setMetricClass('backWinCard', result.backWinProfit);
+      setMetricClass('layWinCard', result.layWinProfit);
+      $('layStakeCard').classList.remove('positive', 'negative', 'warning');
+      $('liabilityCard').classList.remove('positive', 'negative', 'warning');
+
+      const minProfit = Math.min(result.backWinProfit, result.layWinProfit);
+      const diff = Math.abs(result.backWinProfit - result.layWinProfit);
+      const status = minProfit >= 0 ? 'locked profit' : 'qualifying loss';
+      const mood = minProfit >= 0 ? '✅' : '⚠️';
+
+      const equivalentNotes = state.mode === 'equivalent'
+        ? `<br><br><strong>Bookie:</strong> ${escapeHtml($('backDescription').value || 'Not entered')}<br><strong>Exchange:</strong> ${escapeHtml($('layDescription').value || 'Not entered')}`
+        : '';
+
+      $('analysisBox').innerHTML = `${mood} <strong>Estimated ${status}:</strong> ${money(minProfit)}. The two outcomes differ by ${money(diff)} after rounding. ${result.extraLine}${equivalentNotes}`;
+    }
+
+    function escapeHtml(str) {
+      return str
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    function setMode(mode) {
+      state.mode = mode;
+      document.querySelectorAll('.tab').forEach(btn => btn.classList.toggle('active', btn.dataset.mode === mode));
+      document.querySelectorAll('.mode-only').forEach(el => el.classList.toggle('hidden', !el.classList.contains(mode)));
+      $('modeHint').textContent = modeMeta[mode].hint;
+      $('modePill').textContent = modeMeta[mode].label;
+      $('backOddsLabel').textContent = modeMeta[mode].backOddsLabel;
+      $('backOddsHelp').textContent = modeMeta[mode].backOddsHelp;
+      applyExample(mode);
+      calculate();
+    }
+
+    function applyExample(mode) {
+      const ex = examples[mode];
+      Object.entries(ex).forEach(([key, value]) => {
+        if ($(key)) $(key).value = value;
+      });
+    }
+
+    function copyResult() {
+      const result = calculate();
+      if (!result) return;
+      const modeLabel = modeMeta[state.mode].label;
+      let text = `Boosted Builders result\nType: ${modeLabel}\nLay stake: ${money(result.layStake)}\nLiability: ${money(result.liability)}\nIf back wins: ${money(result.backWinProfit)}\nIf lay wins: ${money(result.layWinProfit)}`;
+      if (state.mode === 'equivalent') {
+        text += `\nBookie back: ${$('backDescription').value}\nExchange lay: ${$('layDescription').value}`;
+      }
+      navigator.clipboard.writeText(text).then(showToast).catch(() => {
+        $('analysisBox').innerHTML += '<br><br><strong>Copy failed:</strong> your browser blocked clipboard access.';
+      });
+    }
+
+    function showToast() {
+      const toast = $('toast');
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 1300);
+    }
+
+    document.querySelectorAll('.tab').forEach(btn => btn.addEventListener('click', () => setMode(btn.dataset.mode)));
+    $('calculateBtn').addEventListener('click', calculate);
+    $('copyBtn').addEventListener('click', copyResult);
+    $('resetBtn').addEventListener('click', () => setMode(state.mode));
+    document.querySelectorAll('input, textarea').forEach(input => input.addEventListener('input', calculate));
+
+    setMode('equivalent');
+  </script>
+</body>
+</html>
