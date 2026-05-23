@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Boosted Builders | Equivalent Bet Builder Lay Finder</title>
-  <meta name="description" content="Equivalent-lay finder for UK football Bet Builders. Pick 3 builder legs, find the matching correct-score lay, then calculate equalised and underlay stakes." />
+  <meta name="description" content="Equivalent-lay finder for UK football Bet Builders. Pick 3 builder legs, find the matching correct-score lay, then calculate normal lay and underlay stakes." />
   <style>
     :root {
       --stroke: rgba(255,255,255,0.17);
@@ -148,14 +148,15 @@
       line-height: 1.72;
     }
 
-    .hero-card, .builder, .side-card {
+    .hero-card, .builder, .side-card, .calc-block {
       border: 1px solid var(--stroke);
       background: linear-gradient(180deg, rgba(255,255,255,0.13), rgba(255,255,255,0.055));
       box-shadow: var(--shadow);
       backdrop-filter: blur(22px);
       border-radius: var(--radius);
-      padding: 22px;
     }
+
+    .hero-card, .builder, .side-card { padding: 22px; }
 
     .ticket {
       padding: 18px;
@@ -180,7 +181,7 @@
       font-weight: 850;
     }
 
-    .markets, .examples, .note-list { display: grid; gap: 10px; }
+    .markets, .examples, .note-list, .calc-sections { display: grid; gap: 10px; }
 
     .market-line {
       padding: 12px 14px;
@@ -221,9 +222,10 @@
 
     .top-controls { justify-content: flex-end; }
 
-    h2, h3 { margin: 0; letter-spacing: -0.045em; }
+    h2, h3, h4 { margin: 0; letter-spacing: -0.045em; }
     h2 { font-size: clamp(1.72rem, 3vw, 2.38rem); }
     h3 { font-size: 1.13rem; }
+    h4 { font-size: 1rem; }
 
     .hint {
       margin: 7px 0 0;
@@ -239,7 +241,34 @@
 
     .selector-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); margin-bottom: 18px; }
     .calc-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-    .metrics { grid-template-columns: repeat(6, minmax(0, 1fr)); margin-top: 15px; }
+    .metrics { grid-template-columns: repeat(4, minmax(0, 1fr)); margin-top: 15px; }
+
+    .calc-sections {
+      margin-top: 18px;
+      gap: 16px;
+    }
+
+    .calc-block {
+      padding: 18px;
+      box-shadow: none;
+      background: rgba(5, 8, 18, 0.38);
+    }
+
+    .calc-block.normal {
+      border-color: rgba(34, 211, 238, 0.24);
+    }
+
+    .calc-block.underlay {
+      border-color: rgba(163, 230, 53, 0.24);
+    }
+
+    .block-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 4px;
+    }
 
     label {
       display: block;
@@ -406,7 +435,7 @@
     .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
     @media (max-width: 1180px) {
-      .metrics { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     }
 
     @media (max-width: 980px) {
@@ -418,7 +447,7 @@
       .page { width: min(100% - 22px, 1180px); padding-top: 18px; }
       .nav { align-items: flex-start; flex-direction: column; margin-bottom: 34px; }
       .selector-grid, .calc-grid, .metrics { grid-template-columns: 1fr; }
-      .section-head { flex-direction: column; }
+      .section-head, .block-head { flex-direction: column; }
       .top-controls { justify-content: flex-start; }
       .primary, .secondary { width: 100%; }
       .secondary.compact { width: auto; }
@@ -432,7 +461,7 @@
       <div class="badges">
         <span class="pill">Equivalent lays only</span>
         <span class="pill">3 Bet Builder legs</span>
-        <span class="pill">Underlay result</span>
+        <span class="pill">Normal + underlay</span>
         <span class="pill">18+</span>
       </div>
     </nav>
@@ -443,7 +472,7 @@
         <h1><span class="gradient">Pick 3 legs.</span><br />Find the lay.</h1>
         <p class="subhead">
           Select three football Bet Builder outcomes. If those selections only allow one possible scoreline,
-          this page tells you the correct score to lay and calculates both the equalised lay and the underlay option.
+          this page tells you the correct score to lay and shows a normal lay calculation plus a separate underlay calculation.
         </p>
       </div>
 
@@ -489,7 +518,7 @@
         <div class="section-head">
           <div>
             <h2>Lay calculator</h2>
-            <p class="hint">Enter the stake, boosted builder odds, lay odds and commission. Underlay is calculated automatically as the break-even lay stake.</p>
+            <p class="hint">Enter the stake, boosted builder odds, lay odds and commission. Keep the two result blocks separate when deciding what to place.</p>
           </div>
         </div>
 
@@ -512,13 +541,38 @@
           </div>
         </div>
 
-        <div class="metrics" aria-live="polite">
-          <div class="metric" id="equalStakeCard"><span>Equalised lay</span><strong id="equalStakeOut">—</strong><small>Normal matched lay stake.</small></div>
-          <div class="metric" id="equalProfitCard"><span>Equalised result</span><strong id="equalProfitOut">—</strong><small>Approx profit/loss either way.</small></div>
-          <div class="metric" id="underStakeCard"><span>Underlay stake</span><strong id="underStakeOut">—</strong><small>Lay stake for break-even if lay wins.</small></div>
-          <div class="metric" id="underLiabilityCard"><span>Underlay liability</span><strong id="underLiabilityOut">—</strong><small>Liability using underlay stake.</small></div>
-          <div class="metric" id="underBuilderCard"><span>Builder wins</span><strong id="underBuilderOut">—</strong><small>Profit if boosted builder lands.</small></div>
-          <div class="metric" id="underLayCard"><span>Lay wins</span><strong id="underLayOut">—</strong><small>Result if builder loses.</small></div>
+        <div class="calc-sections" aria-live="polite">
+          <section class="calc-block normal">
+            <div class="block-head">
+              <div>
+                <h3>Normal lay calculation</h3>
+                <p class="hint">This aims to keep both outcomes close together.</p>
+              </div>
+              <span class="pill">Lower variance</span>
+            </div>
+            <div class="metrics">
+              <div class="metric" id="normalStakeCard"><span>Lay stake</span><strong id="normalStakeOut">—</strong><small>Stake to place on the correct-score lay.</small></div>
+              <div class="metric" id="normalLiabilityCard"><span>Liability</span><strong id="normalLiabilityOut">—</strong><small>Exchange liability for the normal lay.</small></div>
+              <div class="metric" id="normalBuilderCard"><span>Builder wins</span><strong id="normalBuilderOut">—</strong><small>Bookie wins, score lay loses.</small></div>
+              <div class="metric" id="normalLayCard"><span>Lay wins</span><strong id="normalLayOut">—</strong><small>Builder loses, score lay wins.</small></div>
+            </div>
+          </section>
+
+          <section class="calc-block underlay">
+            <div class="block-head">
+              <div>
+                <h3>Underlay calculation</h3>
+                <p class="hint">This aims to break even if the lay wins, leaving more upside if the boosted builder wins.</p>
+              </div>
+              <span class="pill">Higher upside</span>
+            </div>
+            <div class="metrics">
+              <div class="metric" id="underStakeCard"><span>Lay stake</span><strong id="underStakeOut">—</strong><small>Smaller lay stake for the underlay option.</small></div>
+              <div class="metric" id="underLiabilityCard"><span>Liability</span><strong id="underLiabilityOut">—</strong><small>Exchange liability using the underlay stake.</small></div>
+              <div class="metric" id="underBuilderCard"><span>Builder wins</span><strong id="underBuilderOut">—</strong><small>Profit if boosted builder lands.</small></div>
+              <div class="metric" id="underLayCard"><span>Lay wins</span><strong id="underLayOut">—</strong><small>Result if builder loses.</small></div>
+            </div>
+          </section>
         </div>
 
         <div class="calc-note" id="calcNote">Choose a clean equivalent score and enter odds to calculate.</div>
@@ -547,7 +601,8 @@
 
         <div class="note-list">
           <div class="note"><strong>Clean lay rule:</strong> if the three legs leave one scoreline, lay that correct score. If they leave several scorelines, it is not a clean equivalent lay.</div>
-          <div class="note"><strong>Underlay result:</strong> the underlay stake shown aims to make the lay-win side break even, while leaving more upside if the boosted builder wins.</div>
+          <div class="note"><strong>Normal lay:</strong> useful when you want the safer, steadier result across both outcomes.</div>
+          <div class="note"><strong>Underlay:</strong> useful when you want more upside if the boosted builder lands and are happy with a weaker lay-win side.</div>
           <div class="note"><strong>Important:</strong> both bookie builder and exchange correct-score market should use the same match period, usually 90 minutes plus stoppage time.</div>
         </div>
       </aside>
@@ -745,49 +800,46 @@
         return;
       }
 
-      const equalisedLayStake = (backStake * backOdds) / (layOdds - commission);
-      const equalisedLiability = (layOdds - 1) * equalisedLayStake;
-      const equalBackWins = ((backOdds - 1) * backStake) - equalisedLiability;
-      const equalLayWins = (equalisedLayStake * (1 - commission)) - backStake;
-      const equalResult = Math.min(equalBackWins, equalLayWins);
+      const normalStake = (backStake * backOdds) / (layOdds - commission);
+      const normalLiability = (layOdds - 1) * normalStake;
+      const normalBuilderWins = ((backOdds - 1) * backStake) - normalLiability;
+      const normalLayWins = (normalStake * (1 - commission)) - backStake;
 
-      const underlayStake = backStake / (1 - commission);
-      const underlayLiability = (layOdds - 1) * underlayStake;
-      const underBuilderWins = ((backOdds - 1) * backStake) - underlayLiability;
-      const underLayWins = (underlayStake * (1 - commission)) - backStake;
-      const savedLayStake = equalisedLayStake - underlayStake;
+      const underStake = backStake / (1 - commission);
+      const underLiability = (layOdds - 1) * underStake;
+      const underBuilderWins = ((backOdds - 1) * backStake) - underLiability;
+      const underLayWins = (underStake * (1 - commission)) - backStake;
+      const stakeDifference = normalStake - underStake;
 
-      lastCalc = { equalisedLayStake, equalBackWins, equalLayWins, equalResult, underlayStake, underlayLiability, underBuilderWins, underLayWins, savedLayStake };
+      lastCalc = { normalStake, normalLiability, normalBuilderWins, normalLayWins, underStake, underLiability, underBuilderWins, underLayWins, stakeDifference };
 
-      $('equalStakeOut').textContent = money(equalisedLayStake);
-      $('equalProfitOut').textContent = money(equalResult);
-      $('underStakeOut').textContent = money(underlayStake);
-      $('underLiabilityOut').textContent = money(underlayLiability);
+      $('normalStakeOut').textContent = money(normalStake);
+      $('normalLiabilityOut').textContent = money(normalLiability);
+      $('normalBuilderOut').textContent = money(normalBuilderWins);
+      $('normalLayOut').textContent = money(normalLayWins);
+      $('underStakeOut').textContent = money(underStake);
+      $('underLiabilityOut').textContent = money(underLiability);
       $('underBuilderOut').textContent = money(underBuilderWins);
       $('underLayOut').textContent = money(underLayWins);
 
-      setMetricClass('equalProfitCard', equalResult);
+      setMetricClass('normalBuilderCard', normalBuilderWins);
+      setMetricClass('normalLayCard', normalLayWins);
       setMetricClass('underBuilderCard', underBuilderWins);
       setMetricClass('underLayCard', underLayWins);
-      ['equalStakeCard', 'underStakeCard', 'underLiabilityCard'].forEach(id => $(id).classList.remove('positive', 'negative', 'warning'));
+      ['normalStakeCard', 'normalLiabilityCard', 'underStakeCard', 'underLiabilityCard'].forEach(id => $(id).classList.remove('positive', 'negative', 'warning'));
 
-      if (savedLayStake > 0) {
-        $('calcNote').innerHTML = `<strong>Underlay result:</strong> lay ${money(savedLayStake)} less than the equalised stake. This aims to break even if the lay wins, while giving <strong>${money(underBuilderWins)}</strong> if the boosted builder lands.`;
+      if (stakeDifference > 0) {
+        $('calcNote').innerHTML = `<strong>Underlay comparison:</strong> the underlay stake is ${money(stakeDifference)} lower than the normal lay stake. That gives more upside if the boosted builder wins, but less protection if the lay wins.`;
       } else {
-        $('calcNote').innerHTML = `<strong>Underlay warning:</strong> at these odds, the break-even lay stake is not lower than the equalised stake, so it is not really an underlay. Check the boosted back odds and lay odds.`;
+        $('calcNote').innerHTML = `<strong>Underlay warning:</strong> at these odds, the underlay stake is not lower than the normal lay stake. Check the boosted back odds and lay odds.`;
       }
     }
 
     function clearCalc() {
       lastCalc = null;
-      $('equalStakeOut').textContent = '—';
-      $('equalProfitOut').textContent = '—';
-      $('underStakeOut').textContent = '—';
-      $('underLiabilityOut').textContent = '—';
-      $('underBuilderOut').textContent = '—';
-      $('underLayOut').textContent = '—';
+      ['normalStakeOut', 'normalLiabilityOut', 'normalBuilderOut', 'normalLayOut', 'underStakeOut', 'underLiabilityOut', 'underBuilderOut', 'underLayOut'].forEach(id => $(id).textContent = '—');
       $('calcNote').textContent = 'Choose a clean equivalent score and enter odds to calculate.';
-      ['equalStakeCard', 'equalProfitCard', 'underStakeCard', 'underLiabilityCard', 'underBuilderCard', 'underLayCard'].forEach(id => $(id).classList.remove('positive', 'negative', 'warning'));
+      ['normalStakeCard', 'normalLiabilityCard', 'normalBuilderCard', 'normalLayCard', 'underStakeCard', 'underLiabilityCard', 'underBuilderCard', 'underLayCard'].forEach(id => $(id).classList.remove('positive', 'negative', 'warning'));
     }
 
     function setExample(name) {
@@ -816,12 +868,18 @@
         `Builder odds after boost: ${toNumber('backOdds')}`,
         `Lay odds: ${toNumber('layOdds')}`,
         `Commission: ${toNumber('commission')}%`,
-        `Equalised lay stake: ${money(lastCalc.equalisedLayStake)}`,
-        `Equalised result: ${money(lastCalc.equalResult)}`,
-        `Underlay stake: ${money(lastCalc.underlayStake)}`,
-        `Underlay liability: ${money(lastCalc.underlayLiability)}`,
-        `If builder wins using underlay: ${money(lastCalc.underBuilderWins)}`,
-        `If lay wins using underlay: ${money(lastCalc.underLayWins)}`
+        '',
+        'Normal lay calculation',
+        `Lay stake: ${money(lastCalc.normalStake)}`,
+        `Liability: ${money(lastCalc.normalLiability)}`,
+        `If builder wins: ${money(lastCalc.normalBuilderWins)}`,
+        `If lay wins: ${money(lastCalc.normalLayWins)}`,
+        '',
+        'Underlay calculation',
+        `Lay stake: ${money(lastCalc.underStake)}`,
+        `Liability: ${money(lastCalc.underLiability)}`,
+        `If builder wins: ${money(lastCalc.underBuilderWins)}`,
+        `If lay wins: ${money(lastCalc.underLayWins)}`
       ].join('\n');
       copyText(text);
     }
