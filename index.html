@@ -4,12 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Boosted Builders | Equivalent Bet Builder Lay Finder</title>
-  <meta name="description" content="A simple equivalent-lay finder for UK football Bet Builders. Pick 3 builder legs, find the matching correct-score lay, then calculate lay stake and liability." />
+  <meta name="description" content="Equivalent-lay finder for UK football Bet Builders. Pick 3 builder legs, find the matching correct-score lay, then calculate lay stake, liability and underlay." />
   <style>
     :root {
       --bg: #070a12;
-      --panel: rgba(255,255,255,0.08);
-      --panel-2: rgba(255,255,255,0.12);
       --stroke: rgba(255,255,255,0.17);
       --text: #f8fbff;
       --muted: #9bacbf;
@@ -58,11 +56,14 @@
       padding: 26px 0 58px;
     }
 
-    .nav {
+    .nav, .hero, .layout, .section-head, .top-controls, .ticket-top, .market-line {
       display: flex;
+      gap: 16px;
+    }
+
+    .nav {
       align-items: center;
       justify-content: space-between;
-      gap: 16px;
       margin-bottom: 48px;
     }
 
@@ -85,7 +86,7 @@
       box-shadow: 0 13px 34px rgba(34, 211, 238, 0.20);
     }
 
-    .badges {
+    .badges, .chips, .actions {
       display: flex;
       align-items: center;
       flex-wrap: wrap;
@@ -151,9 +152,7 @@
       line-height: 1.72;
     }
 
-    .hero-card,
-    .builder,
-    .side-card {
+    .hero-card, .builder, .side-card {
       border: 1px solid var(--stroke);
       background: linear-gradient(180deg, rgba(255,255,255,0.13), rgba(255,255,255,0.055));
       box-shadow: var(--shadow);
@@ -161,10 +160,7 @@
       border-radius: var(--radius);
     }
 
-    .hero-card {
-      padding: 22px;
-      overflow: hidden;
-    }
+    .hero-card, .builder, .side-card { padding: 22px; }
 
     .ticket {
       padding: 18px;
@@ -173,12 +169,9 @@
       border: 1px solid rgba(255,255,255,0.15);
     }
 
-    .ticket-top,
-    .market-line {
-      display: flex;
+    .ticket-top, .market-line {
       justify-content: space-between;
       align-items: center;
-      gap: 12px;
     }
 
     .ticket-top {
@@ -190,10 +183,7 @@
       font-weight: 850;
     }
 
-    .markets {
-      display: grid;
-      gap: 10px;
-    }
+    .markets, .examples, .note-list { display: grid; gap: 10px; }
 
     .market-line {
       padding: 12px 14px;
@@ -213,18 +203,8 @@
       background: linear-gradient(135deg, rgba(163,230,53,0.18), rgba(34,211,238,0.11));
     }
 
-    .lock-card span {
-      display: block;
-      color: var(--soft);
-      font-size: 0.9rem;
-    }
-
-    .lock-card strong {
-      display: block;
-      margin-top: 3px;
-      font-size: 2rem;
-      letter-spacing: -0.05em;
-    }
+    .lock-card span { display: block; color: var(--soft); font-size: 0.9rem; }
+    .lock-card strong { display: block; margin-top: 3px; font-size: 2rem; letter-spacing: -0.05em; }
 
     .layout {
       display: grid;
@@ -234,30 +214,15 @@
       margin-top: 34px;
     }
 
-    .builder,
-    .side-card { padding: 22px; }
-
     .section-head {
-      display: flex;
       align-items: flex-start;
       justify-content: space-between;
-      gap: 16px;
       margin-bottom: 19px;
     }
 
-    .top-controls {
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
+    .top-controls { align-items: center; justify-content: flex-end; flex-wrap: wrap; gap: 10px; }
 
-    h2, h3 {
-      margin: 0;
-      letter-spacing: -0.045em;
-    }
-
+    h2, h3 { margin: 0; letter-spacing: -0.045em; }
     h2 { font-size: clamp(1.72rem, 3vw, 2.38rem); }
     h3 { font-size: 1.13rem; }
 
@@ -268,12 +233,14 @@
       font-size: 0.94rem;
     }
 
-    .selector-grid {
+    .selector-grid, .calc-grid, .metrics {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 14px;
-      margin-bottom: 18px;
+      gap: 13px;
     }
+
+    .selector-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); margin-bottom: 18px; }
+    .calc-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+    .metrics { grid-template-columns: repeat(4, minmax(0, 1fr)); margin-top: 15px; }
 
     label {
       display: block;
@@ -283,8 +250,7 @@
       font-size: 0.91rem;
     }
 
-    select,
-    input {
+    select, input {
       width: 100%;
       color: var(--text);
       border: 1px solid rgba(255,255,255,0.16);
@@ -296,18 +262,13 @@
       transition: border 0.16s ease, box-shadow 0.16s ease, background 0.16s ease;
     }
 
-    select:focus,
-    input:focus {
+    select:focus, input:focus {
       border-color: rgba(34, 211, 238, 0.65);
       box-shadow: 0 0 0 4px rgba(34, 211, 238, 0.12);
       background: rgba(4,7,16,0.82);
     }
 
-    option,
-    optgroup {
-      background: #0b1020;
-      color: var(--text);
-    }
+    option, optgroup { background: #0b1020; color: var(--text); }
 
     .result-banner {
       border: 1px solid rgba(255,255,255,0.15);
@@ -318,27 +279,9 @@
       line-height: 1.6;
     }
 
-    .result-banner.good {
-      border-color: rgba(52, 211, 153, 0.35);
-      background: linear-gradient(135deg, rgba(52,211,153,0.15), rgba(34,211,238,0.08));
-    }
-
-    .result-banner.bad {
-      border-color: rgba(251,113,133,0.35);
-      background: linear-gradient(135deg, rgba(251,113,133,0.14), rgba(251,191,36,0.08));
-    }
-
-    .result-banner.warn {
-      border-color: rgba(251,191,36,0.35);
-      background: linear-gradient(135deg, rgba(251,191,36,0.14), rgba(255,255,255,0.04));
-    }
-
-    .score-main {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      align-items: center;
-      gap: 12px;
-    }
+    .result-banner.good { border-color: rgba(52, 211, 153, 0.35); background: linear-gradient(135deg, rgba(52,211,153,0.15), rgba(34,211,238,0.08)); }
+    .result-banner.bad { border-color: rgba(251,113,133,0.35); background: linear-gradient(135deg, rgba(251,113,133,0.14), rgba(251,191,36,0.08)); }
+    .result-banner.warn { border-color: rgba(251,191,36,0.35); background: linear-gradient(135deg, rgba(251,191,36,0.14), rgba(255,255,255,0.04)); }
 
     .score-title {
       display: block;
@@ -358,28 +301,9 @@
       font-weight: 1000;
     }
 
-    .copy-chip {
-      border: 1px solid rgba(255,255,255,0.16);
-      background: rgba(255,255,255,0.08);
-      color: var(--text);
-      border-radius: 999px;
-      padding: 11px 14px;
-      font-weight: 900;
-      cursor: pointer;
-    }
+    .possible { margin-top: 12px; color: var(--soft); font-size: 0.94rem; }
 
-    .possible {
-      margin-top: 12px;
-      color: var(--soft);
-      font-size: 0.94rem;
-    }
-
-    .chips {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 10px;
-    }
+    .chips { margin-top: 10px; }
 
     .score-chip {
       display: inline-flex;
@@ -389,21 +313,6 @@
       padding: 7px 10px;
       color: var(--soft);
       font-weight: 850;
-    }
-
-    .calc-grid,
-    .metrics {
-      display: grid;
-      gap: 13px;
-    }
-
-    .calc-grid {
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-    }
-
-    .metrics {
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      margin-top: 15px;
     }
 
     .metric {
@@ -424,53 +333,24 @@
       margin-bottom: 8px;
     }
 
-    .metric strong {
-      display: block;
-      font-size: 1.52rem;
-      letter-spacing: -0.05em;
-    }
-
-    .metric small {
-      display: block;
-      color: var(--muted);
-      margin-top: 6px;
-      line-height: 1.35;
-    }
+    .metric strong { display: block; font-size: 1.52rem; letter-spacing: -0.05em; }
+    .metric small { display: block; color: var(--muted); margin-top: 6px; line-height: 1.35; }
 
     .positive strong { color: var(--green); }
     .negative strong { color: var(--red); }
     .warning strong { color: var(--amber); }
 
-    .actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 11px;
-      margin-top: 16px;
-    }
+    button { font: inherit; }
 
-    button {
-      font: inherit;
-    }
-
-    .primary,
-    .secondary,
-    .example-btn {
+    .primary, .secondary, .example-btn {
       border-radius: 16px;
       cursor: pointer;
       font-weight: 950;
       transition: transform 0.15s ease, border 0.15s ease, background 0.15s ease;
     }
 
-    .primary,
-    .secondary {
-      padding: 13px 16px;
-    }
-
-    .secondary.compact {
-      padding: 10px 13px;
-      font-size: 0.86rem;
-      white-space: nowrap;
-    }
+    .primary, .secondary { padding: 13px 16px; }
+    .secondary.compact { padding: 10px 13px; font-size: 0.86rem; white-space: nowrap; }
 
     .primary {
       border: 0;
@@ -479,8 +359,7 @@
       box-shadow: 0 13px 32px rgba(34,211,238,0.15);
     }
 
-    .secondary,
-    .example-btn {
+    .secondary, .example-btn {
       color: var(--text);
       border: 1px solid rgba(255,255,255,0.16);
       background: rgba(255,255,255,0.075);
@@ -488,44 +367,14 @@
 
     button:hover { transform: translateY(-1px); }
 
-    .examples {
-      display: grid;
-      gap: 10px;
-      margin-top: 15px;
-    }
+    .examples { margin-top: 15px; }
+    .example-btn { text-align: left; padding: 13px; line-height: 1.42; }
+    .example-btn strong { display: block; margin-bottom: 3px; }
 
-    .example-btn {
-      text-align: left;
-      padding: 13px;
-      line-height: 1.42;
-    }
+    .note-list { margin-top: 14px; color: var(--soft); line-height: 1.55; }
+    .note { padding: 13px; border: 1px solid rgba(255,255,255,0.12); background: rgba(0,0,0,0.20); border-radius: 16px; }
 
-    .example-btn strong {
-      display: block;
-      margin-bottom: 3px;
-    }
-
-    .note-list {
-      display: grid;
-      gap: 11px;
-      margin-top: 14px;
-      color: var(--soft);
-      line-height: 1.55;
-    }
-
-    .note {
-      padding: 13px;
-      border: 1px solid rgba(255,255,255,0.12);
-      background: rgba(0,0,0,0.20);
-      border-radius: 16px;
-    }
-
-    .footer-note {
-      margin-top: 23px;
-      color: var(--muted);
-      line-height: 1.65;
-      font-size: 0.9rem;
-    }
+    .footer-note { margin-top: 23px; color: var(--muted); line-height: 1.65; font-size: 0.9rem; }
 
     .toast {
       position: fixed;
@@ -543,29 +392,24 @@
       box-shadow: var(--shadow);
     }
 
-    .toast.show {
-      opacity: 1;
-      transform: translateX(-50%) translateY(0);
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    @media (max-width: 1080px) {
+      .calc-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     }
 
     @media (max-width: 980px) {
-      .hero,
-      .layout { grid-template-columns: 1fr; }
-      .calc-grid,
+      .hero, .layout { grid-template-columns: 1fr; }
       .metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     }
 
     @media (max-width: 680px) {
       .page { width: min(100% - 22px, 1180px); padding-top: 18px; }
       .nav { align-items: flex-start; flex-direction: column; margin-bottom: 34px; }
-      .selector-grid,
-      .calc-grid,
-      .metrics { grid-template-columns: 1fr; }
+      .selector-grid, .calc-grid, .metrics { grid-template-columns: 1fr; }
       .section-head { flex-direction: column; }
       .top-controls { justify-content: flex-start; }
-      .score-main { grid-template-columns: 1fr; }
-      .primary,
-      .secondary { width: 100%; }
+      .primary, .secondary { width: 100%; }
       .secondary.compact { width: auto; }
     }
   </style>
@@ -587,7 +431,7 @@
         <h1><span class="gradient">Pick 3 legs.</span><br />Find the lay.</h1>
         <p class="subhead">
           Select three football Bet Builder outcomes. If those selections only allow one possible scoreline,
-          this page tells you the correct score to lay on the exchange and calculates the normal equivalent lay stake.
+          this page tells you the correct score to lay on the exchange and calculates the lay stake, liability and optional underlay.
         </p>
       </div>
 
@@ -599,7 +443,7 @@
             <div class="market-line"><span>Leg 2</span><strong>Both teams to score</strong></div>
             <div class="market-line"><span>Leg 3</span><strong>Under 3.5 goals</strong></div>
           </div>
-          <div class="lock-card"><span>Correct lay that loses if builder wins</span><strong>Lay 1-1 🔒</strong></div>
+          <div class="lock-card"><span>Correct score to lay</span><strong>1-1 🔒</strong></div>
         </div>
       </aside>
     </section>
@@ -618,28 +462,14 @@
         </div>
 
         <div class="selector-grid">
-          <div>
-            <label for="leg1">Selection 1</label>
-            <select id="leg1"></select>
-          </div>
-          <div>
-            <label for="leg2">Selection 2</label>
-            <select id="leg2"></select>
-          </div>
-          <div>
-            <label for="leg3">Selection 3</label>
-            <select id="leg3"></select>
-          </div>
+          <div><label for="leg1">Selection 1</label><select id="leg1"></select></div>
+          <div><label for="leg2">Selection 2</label><select id="leg2"></select></div>
+          <div><label for="leg3">Selection 3</label><select id="leg3"></select></div>
         </div>
 
         <div class="result-banner warn" id="resultBanner">
-          <div class="score-main">
-            <div>
-              <span class="score-title">Correct-score lay</span>
-              <strong class="score-value" id="scoreValue">Choose 3 legs</strong>
-            </div>
-            <button class="copy-chip" type="button" id="copyLayBtn">Copy lay</button>
-          </div>
+          <span class="score-title">Correct-score lay</span>
+          <strong class="score-value" id="scoreValue">Choose 3 legs</strong>
           <div class="possible" id="scoreExplanation">Once the combo collapses to one scoreline, this becomes a clean equivalent lay.</div>
           <div class="chips" id="scoreChips"></div>
         </div>
@@ -647,7 +477,7 @@
         <div class="section-head">
           <div>
             <h2>Lay calculator</h2>
-            <p class="hint">Uses the standard back/lay formula once a clean correct-score lay exists.</p>
+            <p class="hint">Uses the standard back/lay formula once a clean correct-score lay exists. Underlay subtracts from the equalised lay stake.</p>
           </div>
         </div>
 
@@ -657,7 +487,7 @@
             <input id="backStake" inputmode="decimal" value="10" />
           </div>
           <div>
-            <label for="backOdds">Builder odds</label>
+            <label for="backOdds">Builder odds (BACK ODDS AFTER THE BOOST)</label>
             <input id="backOdds" inputmode="decimal" value="4.50" />
           </div>
           <div>
@@ -668,10 +498,14 @@
             <label for="commission">Commission (%)</label>
             <input id="commission" inputmode="decimal" value="2" />
           </div>
+          <div>
+            <label for="underlay">Underlay amount (£)</label>
+            <input id="underlay" inputmode="decimal" value="0" />
+          </div>
         </div>
 
         <div class="metrics" aria-live="polite">
-          <div class="metric" id="layStakeCard"><span>Lay stake</span><strong id="layStakeOut">—</strong><small>Stake to place on the correct-score lay.</small></div>
+          <div class="metric" id="layStakeCard"><span>Lay stake</span><strong id="layStakeOut">—</strong><small id="layStakeNote">Stake to place on the correct-score lay.</small></div>
           <div class="metric" id="liabilityCard"><span>Liability</span><strong id="liabilityOut">—</strong><small>Cash needed in the exchange.</small></div>
           <div class="metric" id="backWinCard"><span>If builder wins</span><strong id="backWinOut">—</strong><small>Bookie wins, correct-score lay loses.</small></div>
           <div class="metric" id="layWinCard"><span>If lay wins</span><strong id="layWinOut">—</strong><small>Builder loses, correct-score lay wins.</small></div>
@@ -691,17 +525,17 @@
         <h3>Fast examples</h3>
         <p class="hint">Tap one, then change the odds to whatever you see at the bookie/exchange.</p>
         <div class="examples">
-          <button class="example-btn" type="button" data-example="draw-1-1"><strong>Draw + BTTS + U3.5</strong>Lay correct score 1-1</button>
-          <button class="example-btn" type="button" data-example="home-2-1"><strong>Home + BTTS + U3.5</strong>Lay correct score 2-1</button>
-          <button class="example-btn" type="button" data-example="away-1-2"><strong>Away + BTTS + U3.5</strong>Lay correct score 1-2</button>
-          <button class="example-btn" type="button" data-example="home-1-0"><strong>Home + BTTS No + U1.5</strong>Lay correct score 1-0</button>
-          <button class="example-btn" type="button" data-example="away-0-1"><strong>Away + BTTS No + U1.5</strong>Lay correct score 0-1</button>
-          <button class="example-btn" type="button" data-example="draw-0-0"><strong>Draw + BTTS No + U1.5</strong>Lay correct score 0-0</button>
+          <button class="example-btn" type="button" data-example="draw-1-1"><strong>Draw + BTTS + U3.5</strong>Correct score to lay: 1-1</button>
+          <button class="example-btn" type="button" data-example="home-2-1"><strong>Home + BTTS + U3.5</strong>Correct score to lay: 2-1</button>
+          <button class="example-btn" type="button" data-example="away-1-2"><strong>Away + BTTS + U3.5</strong>Correct score to lay: 1-2</button>
+          <button class="example-btn" type="button" data-example="home-1-0"><strong>Home + BTTS No + U1.5</strong>Correct score to lay: 1-0</button>
+          <button class="example-btn" type="button" data-example="away-0-1"><strong>Away + BTTS No + U1.5</strong>Correct score to lay: 0-1</button>
+          <button class="example-btn" type="button" data-example="draw-0-0"><strong>Draw + BTTS No + U1.5</strong>Correct score to lay: 0-0</button>
         </div>
 
         <div class="note-list">
-          <div class="note"><strong>Clean lay rule:</strong> if the three legs leave one scoreline, lay that score. If they leave several scorelines, it is not a clean equivalent lay.</div>
-          <div class="note"><strong>Example:</strong> Draw + BTTS + Under 5.5 gives 1-1 or 2-2, so it is not clean enough for a single correct-score lay.</div>
+          <div class="note"><strong>Clean lay rule:</strong> if the three legs leave one scoreline, lay that correct score. If they leave several scorelines, it is not a clean equivalent lay.</div>
+          <div class="note"><strong>Underlay:</strong> enter how much less than the equalised lay stake you want to lay. This improves the builder-win side and worsens the lay-win side.</div>
           <div class="note"><strong>Important:</strong> both bookie builder and exchange correct-score market should use the same match period, usually 90 minutes plus stoppage time.</div>
         </div>
       </aside>
@@ -714,59 +548,20 @@
     const $ = (id) => document.getElementById(id);
 
     const groups = [
-      {
-        label: 'Match result',
-        options: [
-          ['result_home', 'Home win'],
-          ['result_draw', 'Draw'],
-          ['result_away', 'Away win']
-        ]
-      },
-      {
-        label: 'Both teams to score',
-        options: [
-          ['btts_yes', 'Both teams to score: Yes'],
-          ['btts_no', 'Both teams to score: No']
-        ]
-      },
-      {
-        label: 'Total goals',
-        options: [
-          ['under_0_5', 'Under 0.5 goals'],
-          ['under_1_5', 'Under 1.5 goals'],
-          ['under_2_5', 'Under 2.5 goals'],
-          ['under_3_5', 'Under 3.5 goals'],
-          ['under_4_5', 'Under 4.5 goals'],
-          ['under_5_5', 'Under 5.5 goals'],
-          ['over_0_5', 'Over 0.5 goals'],
-          ['over_1_5', 'Over 1.5 goals'],
-          ['over_2_5', 'Over 2.5 goals'],
-          ['over_3_5', 'Over 3.5 goals'],
-          ['over_4_5', 'Over 4.5 goals']
-        ]
-      },
-      {
-        label: 'Home team goals',
-        options: [
-          ['home_over_0_5', 'Home over 0.5 goals'],
-          ['home_over_1_5', 'Home over 1.5 goals'],
-          ['home_over_2_5', 'Home over 2.5 goals'],
-          ['home_under_0_5', 'Home under 0.5 goals'],
-          ['home_under_1_5', 'Home under 1.5 goals'],
-          ['home_under_2_5', 'Home under 2.5 goals']
-        ]
-      },
-      {
-        label: 'Away team goals',
-        options: [
-          ['away_over_0_5', 'Away over 0.5 goals'],
-          ['away_over_1_5', 'Away over 1.5 goals'],
-          ['away_over_2_5', 'Away over 2.5 goals'],
-          ['away_under_0_5', 'Away under 0.5 goals'],
-          ['away_under_1_5', 'Away under 1.5 goals'],
-          ['away_under_2_5', 'Away under 2.5 goals']
-        ]
-      }
+      { label: 'Match result', options: [['result_home', 'Home win'], ['result_draw', 'Draw'], ['result_away', 'Away win']] },
+      { label: 'Both teams to score', options: [['btts_yes', 'Both teams to score: Yes'], ['btts_no', 'Both teams to score: No']] },
+      { label: 'Total goals', options: [
+        ['under_0_5', 'Under 0.5 goals'], ['under_1_5', 'Under 1.5 goals'], ['under_2_5', 'Under 2.5 goals'], ['under_3_5', 'Under 3.5 goals'], ['under_4_5', 'Under 4.5 goals'], ['under_5_5', 'Under 5.5 goals'],
+        ['over_0_5', 'Over 0.5 goals'], ['over_1_5', 'Over 1.5 goals'], ['over_2_5', 'Over 2.5 goals'], ['over_3_5', 'Over 3.5 goals'], ['over_4_5', 'Over 4.5 goals']
+      ]},
+      { label: 'Home team goals', options: [
+        ['home_over_0_5', 'Home over 0.5 goals'], ['home_over_1_5', 'Home over 1.5 goals'], ['home_over_2_5', 'Home over 2.5 goals'],
+        ['home_under_0_5', 'Home under 0.5 goals'], ['home_under_1_5', 'Home under 1.5 goals'], ['home_under_2_5', 'Home under 2.5 goals']
+      ]},
+      { label: 'Away team goals', options: [
+        ['away_over_0_5', 'Away over 0.5 goals'], ['away_over_1_5', 'Away over 1.5 goals'], ['away_over_2_5', 'Away over 2.5 goals'],
+        ['away_under_0_5', 'Away under 0.5 goals'], ['away_under_1_5', 'Away under 1.5 goals'], ['away_under_2_5', 'Away under 2.5 goals']
+      ]}
     ];
 
     const labels = Object.fromEntries(groups.flatMap(group => group.options));
@@ -812,6 +607,7 @@
     };
 
     let currentScores = [];
+    let lastCalc = null;
 
     function populateSelects() {
       ['leg1', 'leg2', 'leg3'].forEach((id) => {
@@ -858,9 +654,7 @@
       return `${sign}£${Math.abs(value).toFixed(2)}`;
     }
 
-    function scoreText(score) {
-      return `${score.h}-${score.a}`;
-    }
+    function scoreText(score) { return `${score.h}-${score.a}`; }
 
     function setMetricClass(id, value) {
       const card = $(id);
@@ -895,8 +689,8 @@
         const score = currentScores[0];
         banner.classList.add('good');
         $('statusPill').textContent = 'Clean equivalent lay';
-        $('scoreValue').textContent = `Lay ${scoreText(score)}`;
-        $('scoreExplanation').innerHTML = `<strong>${selectionNames}</strong> only wins on <strong>${scoreText(score)}</strong>. The correct-score lay should lose when the builder wins.`;
+        $('scoreValue').textContent = scoreText(score);
+        $('scoreExplanation').innerHTML = `<strong>${selectionNames}</strong> only wins on <strong>${scoreText(score)}</strong>. That is the correct-score market to lay.`;
         addChip(scoreText(score));
         calculateLay();
         return;
@@ -933,21 +727,27 @@
       const backOdds = toNumber('backOdds');
       const layOdds = toNumber('layOdds');
       const commission = toNumber('commission') / 100;
+      const requestedUnderlay = Math.max(0, toNumber('underlay') || 0);
 
       if (!(backStake > 0) || !(backOdds > 1) || !(layOdds > 1) || !(commission >= 0 && commission < 1)) {
         clearCalc();
         return;
       }
 
-      const layStake = (backStake * backOdds) / (layOdds - commission);
+      const equalisedLayStake = (backStake * backOdds) / (layOdds - commission);
+      const appliedUnderlay = Math.min(requestedUnderlay, equalisedLayStake);
+      const layStake = equalisedLayStake - appliedUnderlay;
       const liability = (layOdds - 1) * layStake;
       const builderWins = ((backOdds - 1) * backStake) - liability;
       const layWins = (layStake * (1 - commission)) - backStake;
+
+      lastCalc = { equalisedLayStake, requestedUnderlay, appliedUnderlay, layStake, liability, builderWins, layWins };
 
       $('layStakeOut').textContent = money(layStake);
       $('liabilityOut').textContent = money(liability);
       $('backWinOut').textContent = money(builderWins);
       $('layWinOut').textContent = money(layWins);
+      $('layStakeNote').textContent = `Equalised ${money(equalisedLayStake)} · underlay ${money(appliedUnderlay)}`;
       setMetricClass('backWinCard', builderWins);
       setMetricClass('layWinCard', layWins);
       $('layStakeCard').classList.remove('positive', 'negative', 'warning');
@@ -955,10 +755,12 @@
     }
 
     function clearCalc() {
+      lastCalc = null;
       $('layStakeOut').textContent = '—';
       $('liabilityOut').textContent = '—';
       $('backWinOut').textContent = '—';
       $('layWinOut').textContent = '—';
+      $('layStakeNote').textContent = 'Stake to place on the correct-score lay.';
       ['layStakeCard', 'liabilityCard', 'backWinCard', 'layWinCard'].forEach(id => $(id).classList.remove('positive', 'negative', 'warning'));
     }
 
@@ -974,16 +776,8 @@
       navigator.clipboard.writeText(text).then(showToast).catch(() => alert(text));
     }
 
-    function copyLay() {
-      if (currentScores.length !== 1) {
-        copyText('No clean equivalent lay found yet.');
-        return;
-      }
-      copyText(`Lay Correct Score ${scoreText(currentScores[0])}`);
-    }
-
     function copyFullResult() {
-      if (currentScores.length !== 1) {
+      if (currentScores.length !== 1 || !lastCalc) {
         copyText('No clean equivalent lay found.');
         return;
       }
@@ -991,15 +785,17 @@
       const text = [
         'Boosted Builders equivalent lay',
         `Builder: ${selections}`,
-        `Correct-score lay: Lay ${scoreText(currentScores[0])}`,
+        `Correct-score market to lay: ${scoreText(currentScores[0])}`,
         `Back stake: £${toNumber('backStake').toFixed(2)}`,
-        `Builder odds: ${toNumber('backOdds')}`,
+        `Builder odds after boost: ${toNumber('backOdds')}`,
         `Lay odds: ${toNumber('layOdds')}`,
         `Commission: ${toNumber('commission')}%`,
-        `Lay stake: ${$('layStakeOut').textContent}`,
-        `Liability: ${$('liabilityOut').textContent}`,
-        `If builder wins: ${$('backWinOut').textContent}`,
-        `If lay wins: ${$('layWinOut').textContent}`
+        `Equalised lay stake: ${money(lastCalc.equalisedLayStake)}`,
+        `Underlay amount: ${money(lastCalc.appliedUnderlay)}`,
+        `Actual lay stake: ${money(lastCalc.layStake)}`,
+        `Liability: ${money(lastCalc.liability)}`,
+        `If builder wins: ${money(lastCalc.builderWins)}`,
+        `If lay wins: ${money(lastCalc.layWins)}`
       ].join('\n');
       copyText(text);
     }
@@ -1012,8 +808,7 @@
 
     populateSelects();
     ['leg1', 'leg2', 'leg3'].forEach(id => $(id).addEventListener('change', updateFinder));
-    ['backStake', 'backOdds', 'layOdds', 'commission'].forEach(id => $(id).addEventListener('input', calculateLay));
-    $('copyLayBtn').addEventListener('click', copyLay);
+    ['backStake', 'backOdds', 'layOdds', 'commission', 'underlay'].forEach(id => $(id).addEventListener('input', calculateLay));
     $('copyResultBtn').addEventListener('click', copyFullResult);
     $('resetBtn').addEventListener('click', () => setExample('draw-1-1'));
     document.querySelectorAll('.example-btn').forEach(btn => btn.addEventListener('click', () => setExample(btn.dataset.example)));
