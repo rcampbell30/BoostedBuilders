@@ -245,6 +245,14 @@
       margin-bottom: 19px;
     }
 
+    .top-controls {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
     h2, h3 {
       margin: 0;
       letter-spacing: -0.045em;
@@ -458,6 +466,12 @@
       padding: 13px 16px;
     }
 
+    .secondary.compact {
+      padding: 10px 13px;
+      font-size: 0.86rem;
+      white-space: nowrap;
+    }
+
     .primary {
       border: 0;
       color: #071018;
@@ -548,9 +562,11 @@
       .calc-grid,
       .metrics { grid-template-columns: 1fr; }
       .section-head { flex-direction: column; }
+      .top-controls { justify-content: flex-start; }
       .score-main { grid-template-columns: 1fr; }
       .primary,
       .secondary { width: 100%; }
+      .secondary.compact { width: auto; }
     }
   </style>
 </head>
@@ -595,7 +611,10 @@
             <h2 id="finder-title">Equivalent lay finder</h2>
             <p class="hint">Choose exactly three selections. The finder checks possible scorelines from 0-0 to 6-6.</p>
           </div>
-          <span class="pill" id="statusPill">Waiting for 3 legs</span>
+          <div class="top-controls">
+            <span class="pill" id="statusPill">Waiting for 3 legs</span>
+            <button class="secondary compact" type="button" id="resetBtn">Reset to 1-1 example</button>
+          </div>
         </div>
 
         <div class="selector-grid">
@@ -660,7 +679,6 @@
 
         <div class="actions">
           <button class="primary" type="button" id="copyResultBtn">Copy full result</button>
-          <button class="secondary" type="button" id="resetBtn">Reset to 1-1 example</button>
         </div>
 
         <p class="footer-note">
@@ -796,7 +814,7 @@
     let currentScores = [];
 
     function populateSelects() {
-      ['leg1', 'leg2', 'leg3'].forEach((id, index) => {
+      ['leg1', 'leg2', 'leg3'].forEach((id) => {
         const select = $(id);
         select.innerHTML = '<option value="">Choose selection</option>';
         groups.forEach(group => {
@@ -822,9 +840,7 @@
       for (let h = 0; h <= 6; h++) {
         for (let a = 0; a <= 6; a++) {
           const score = { h, a };
-          if (selectionIds.every(id => tests[id] && tests[id](score))) {
-            scores.push(score);
-          }
+          if (selectionIds.every(id => tests[id] && tests[id](score))) scores.push(score);
         }
       }
       return scores;
@@ -868,7 +884,7 @@
         $('statusPill').textContent = 'Waiting for 3 legs';
         $('scoreValue').textContent = 'Choose 3 legs';
         $('scoreExplanation').textContent = 'Pick three Bet Builder selections to see whether they map to one clean correct-score lay.';
-        clearCalc('Need exactly three selections before calculating the lay.');
+        clearCalc();
         return;
       }
 
@@ -891,7 +907,7 @@
         $('statusPill').textContent = 'No matching score';
         $('scoreValue').textContent = 'No clean lay';
         $('scoreExplanation').innerHTML = `<strong>${selectionNames}</strong> creates an impossible or contradictory combination in the checked score range.`;
-        clearCalc('No matching correct score, so there is no equivalent lay to calculate.');
+        clearCalc();
         return;
       }
 
@@ -901,7 +917,7 @@
       $('scoreExplanation').innerHTML = `<strong>${selectionNames}</strong> can land on more than one scoreline, so a single correct-score lay will not fully cover it.`;
       currentScores.slice(0, 16).forEach(score => addChip(scoreText(score)));
       if (currentScores.length > 16) addChip(`+${currentScores.length - 16} more`);
-      clearCalc('This combination has multiple possible winning scores. Choose tighter legs before calculating.');
+      clearCalc();
     }
 
     function addChip(text) {
@@ -919,7 +935,7 @@
       const commission = toNumber('commission') / 100;
 
       if (!(backStake > 0) || !(backOdds > 1) || !(layOdds > 1) || !(commission >= 0 && commission < 1)) {
-        clearCalc('Enter a valid stake, builder odds, lay odds and commission.');
+        clearCalc();
         return;
       }
 
@@ -938,13 +954,12 @@
       $('liabilityCard').classList.remove('positive', 'negative', 'warning');
     }
 
-    function clearCalc(reason) {
+    function clearCalc() {
       $('layStakeOut').textContent = '—';
       $('liabilityOut').textContent = '—';
       $('backWinOut').textContent = '—';
       $('layWinOut').textContent = '—';
       ['layStakeCard', 'liabilityCard', 'backWinCard', 'layWinCard'].forEach(id => $(id).classList.remove('positive', 'negative', 'warning'));
-      if (reason) console.info(reason);
     }
 
     function setExample(name) {
